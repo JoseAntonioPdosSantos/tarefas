@@ -11,8 +11,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@EqualsAndHashCode(exclude={"listaTarefa","descricao","status"})
 public @Data class Tarefa {
 
 	@Id

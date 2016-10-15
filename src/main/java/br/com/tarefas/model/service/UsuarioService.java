@@ -1,5 +1,7 @@
 package br.com.tarefas.model.service;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -15,6 +17,7 @@ import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 
 import br.com.tarefas.model.persistence.dao.UsuarioDAO;
+import br.com.tarefas.model.persistence.entity.LoginFacebook;
 import br.com.tarefas.model.persistence.entity.Usuario;
 
 @Path("/users")
@@ -48,13 +51,6 @@ public class UsuarioService {
 		return (usuarios != null && usuarios.size() > 0);
 	}
 	
-	private boolean isEmailPodeSerAtualizado(Usuario usuario){
-		Criterion email = Restrictions.eq("email", usuario.getEmail());
-		Criterion usuario_ = Restrictions.ne("usuario", usuario);
-		List<Usuario> usuarios = usuarioDAO.find(email,usuario_);
-		return !(usuarios != null && usuarios.size() > 0);
-	}
-	
 	@PUT
 	@Path("/update")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -70,13 +66,29 @@ public class UsuarioService {
 		return null;
 	}
 
+	private boolean isEmailPodeSerAtualizado(Usuario usuario){
+		Criterion email = Restrictions.eq("email", usuario.getEmail());
+		Criterion usuario_ = Restrictions.ne("id", usuario.getId());
+		List<Usuario> usuarios = usuarioDAO.find(email,usuario_);
+		return !(usuarios != null && usuarios.size() > 0);
+	}
+	
 	@POST
 	@Path("/authenticate")
 	@Produces(MediaType.TEXT_PLAIN)
+	public String autenticarPeloFacebook(){
+		LoginFacebook loginFacebook = new LoginFacebook();
+		return "redirect:" + loginFacebook.getLoginRedirectURL();
+	}
+	
+	@GET
+	@Path("/authenticateT/{code}")
+	@Produces(MediaType.TEXT_PLAIN)
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET )
-	public String autenticarPeloFacebook(String token) {
-
-		return null;
+	public String autenticarPeloFacebook(@PathParam("code") String token) throws MalformedURLException, IOException {
+		LoginFacebook loginFacebook = new LoginFacebook();
+		loginFacebook.obterUsuarioFacebook(token);
+		return "redirect:/";
 	}
 
 //	@POST

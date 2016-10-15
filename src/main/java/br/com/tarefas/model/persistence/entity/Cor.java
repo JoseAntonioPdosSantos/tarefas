@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@EqualsAndHashCode(exclude="nomeCor")
 public @Data class Cor {
 
 	@Id

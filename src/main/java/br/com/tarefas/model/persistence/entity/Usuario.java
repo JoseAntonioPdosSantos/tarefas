@@ -7,8 +7,10 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
+@EqualsAndHashCode(exclude={"nome","email","senha","tokenFacebook"})
 public @Data class Usuario {
 
 	@Id
