@@ -2,8 +2,6 @@ package br.com.tarefas.model.persistence.dao;
 
 import java.util.List;
 
-import javax.ws.rs.PathParam;
-
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;

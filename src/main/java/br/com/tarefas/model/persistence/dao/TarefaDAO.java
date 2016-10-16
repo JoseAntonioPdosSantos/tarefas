@@ -1,6 +1,5 @@
 package br.com.tarefas.model.persistence.dao;
 
-import br.com.tarefas.model.persistence.entity.ListaTarefa;
 import br.com.tarefas.model.persistence.entity.Tarefa;
 import br.com.tarefas.model.util.HibernateUtil;
 

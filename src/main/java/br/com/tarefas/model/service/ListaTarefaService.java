@@ -13,8 +13,15 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.Restrictions;
+
+import br.com.tarefas.model.persistence.dao.CorDAO;
 import br.com.tarefas.model.persistence.dao.ListaTarefaDAO;
+import br.com.tarefas.model.persistence.dao.UsuarioDAO;
+import br.com.tarefas.model.persistence.entity.Cor;
 import br.com.tarefas.model.persistence.entity.ListaTarefa;
+import br.com.tarefas.model.persistence.entity.Usuario;
 
 @Path("/task_lists")
 public class ListaTarefaService {
@@ -33,7 +40,42 @@ public class ListaTarefaService {
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	public ListaTarefa cadastrarListaTarefa(ListaTarefa listaTarefa){
-		return null;
+		
+		if(listaTarefa != null){
+			if(listaTarefa.getUsuario() != null){
+				if(listaTarefa.getUsuario().getEmail() != null){
+					Criterion email = Restrictions.eq("email", listaTarefa.getUsuario().getEmail());
+					List<Usuario> usuarios = new UsuarioDAO().find(email);
+					if(usuarios!= null && usuarios.size() > 0){
+						listaTarefa.setUsuario(usuarios.get(0));
+					}else{
+						return null;
+					}
+				}else{
+					return null;
+				}
+			}else{
+				return null;
+			}
+			if(listaTarefa.getCor() != null){
+				if(listaTarefa.getCor().getNomeCor()!= null && !listaTarefa.getCor().getNomeCor().trim().isEmpty()){
+					Cor cor = new Cor();
+					cor.setNomeCor(listaTarefa.getCor().getNomeCor());
+					
+					CorDAO corDAO = new CorDAO();
+					cor = corDAO.cadastrarCor(cor);
+					if(cor != null)	{
+						listaTarefa.setCor(cor);
+					}else{
+						return null;
+					}
+				}
+			}
+			return listaTarefaDAO.cadastrarListaTarefa(listaTarefa);
+			
+		}else{
+			return null;
+		}
 	}
 
 	@PUT
@@ -41,7 +83,10 @@ public class ListaTarefaService {
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	public ListaTarefa atualizarListaTarefa(ListaTarefa listaTarefa,@PathParam("task_list_id") int task_list_id){
-		return null; 
+		ListaTarefa listaTarefa_ = listaTarefaDAO.findById(task_list_id);
+		listaTarefa_.setCor(listaTarefa.getCor());
+		listaTarefa_.setNome(listaTarefa.getNome());
+		return listaTarefaDAO.atualizarListaTarefa(listaTarefa_); 
 	}
 	
 	@GET

@@ -14,7 +14,7 @@ public class LoginFacebook {
     private static final String client_id = "1304210512945458";
     private static final String redirect_uri = "http://localhost:8080/tarefas/service/users/authenticateT";
     
-    public void obterUsuarioFacebook(String code)
+    public UsuarioFacebook obterUsuarioFacebook(String code)
 			throws MalformedURLException, IOException {
  
 		String retorno = readURL(new URL(this.getAuthURL(code)));
@@ -40,8 +40,7 @@ public class LoginFacebook {
 		JSONObject resp = new JSONObject(readURL(new URL(
 				"https://graph.facebook.com/me?access_token=" + accessToken)));
  
-		UsuarioFacebook usuarioFacebook = new UsuarioFacebook(resp);
-		System.out.println(usuarioFacebook.toString());
+		return new UsuarioFacebook(resp);
  
 	}
  
