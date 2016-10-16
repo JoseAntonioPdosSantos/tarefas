@@ -36,7 +36,7 @@ public class ListaTarefaDAO extends HibernateUtil{
 		} 
 	}
 	
-	public ListaTarefa findById(int id){
+	public ListaTarefa findById(long id){
 		try {
 			return (ListaTarefa) em.find(ListaTarefa.class,id);
 		} catch (Exception e) {

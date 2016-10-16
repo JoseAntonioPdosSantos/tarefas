@@ -5,7 +5,6 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
@@ -19,25 +18,40 @@ public class TarefaService {
 	
 	private final String CHARSET = ";charset=utf-8";
 	
-	
 	@PostConstruct
 	private void init() {
 		tarefaDAO = new TarefaDAO();
 	}
 	
 	@POST
-	@Path("/add/{task_list_id}")
+	@Path("/add")
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
-	public Tarefa cadastrarTarefa(Tarefa tarefa, @PathParam("task_list_id") int task_list_id) {
+	public Tarefa cadastrarTarefa(Tarefa tarefa) {
+		if(tarefa != null){
+			if(tarefa.getListaTarefa() != null){
+				if(tarefa.getListaTarefa().getId() > 0){
+					if(tarefa.getDescricao() != null && !tarefa.getDescricao().trim().isEmpty()){
+						if(tarefa.getStatus() != null){
+							return tarefaDAO.cadastrarTarefa(tarefa);
+						}
+					}
+				}
+			}
+		}
 		return null;
 	}
 
 	@PUT
-	@Path("/update/{task_list_id}/tasks/{task_id}")
+	@Path("/update")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
-	public Tarefa atualizarListaTarefa(@PathParam("task_list_id") int task_list_id, @PathParam("task_id") int task_id) {
+	public Tarefa atualizarListaTarefa(Tarefa tarefa) {
+		if(tarefa != null && tarefa.getId() > 0){
+			Tarefa tarefa_ = tarefaDAO.findById(tarefa.getId());
+			tarefa_.setStatus(tarefa.getStatus());
+			return tarefaDAO.atualizarListaTarefa(tarefa_);
+		}
 		return null;
 	}
 }

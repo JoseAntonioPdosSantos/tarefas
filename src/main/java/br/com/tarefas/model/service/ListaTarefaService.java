@@ -94,14 +94,16 @@ public class ListaTarefaService {
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	@Consumes(MediaType.TEXT_PLAIN)
 	public List<ListaTarefa> listarListaTarefa(@PathParam("id") int id){
-		return null;
+		Criterion usuario = Restrictions.eq("usuario.id", id);
+		return listaTarefaDAO.listarListaTarefa(usuario);
 	}
 	
 	@DELETE
 	@Path("/remove/{task_list_id}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	public void removerListaTarefa(@PathParam("task_list_id") int task_list_id){
-		
+		ListaTarefa listaTarefa = listaTarefaDAO.findById(task_list_id);
+		listaTarefaDAO.removerListaTarefa(listaTarefa);
 	}
 
 	

@@ -30,7 +30,7 @@ public class TarefaDAO extends HibernateUtil{
 		} 
 	}
 	
-	public Tarefa findById(int id){
+	public Tarefa findById(long id){
 		try {
 			return (Tarefa) em.find(Tarefa.class,id);
 		} catch (Exception e) {
