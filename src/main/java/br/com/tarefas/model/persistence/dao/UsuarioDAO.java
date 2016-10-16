@@ -35,6 +35,14 @@ public class UsuarioDAO extends HibernateUtil {
 		}
 	}
 
+	public Usuario findById(long id){
+		try {
+			return (Usuario) em.find(Usuario.class,id);
+		} catch (Exception e) {
+			return null;
+		} 
+	}
+	
 	@SuppressWarnings("unchecked")
 	public List<Usuario> find(Criterion... criterion) {
 		Criteria crit = ((Session) em.getDelegate())

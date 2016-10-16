@@ -57,7 +57,11 @@ public class UsuarioService {
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	public String atualizarCadastro(Usuario usuario) {
 		if (isEmailPodeSerAtualizado(usuario)) {
-			if (usuarioDAO.atualizarCadastro(usuario)) {
+			Usuario usuario_ = usuarioDAO.findById(usuario.getId());
+			usuario_.setNome(usuario.getNome());
+			usuario_.setEmail(usuario.getEmail());
+			usuario_.setSenha(usuario.getSenha());
+			if (usuarioDAO.atualizarCadastro(usuario_)) {
 				return "Usuário Atualizado.";
 			}
 		} else {
@@ -91,7 +95,7 @@ public class UsuarioService {
 
 			UsuarioFacebook usuarioFacebook = loginFacebook.obterUsuarioFacebook(token);
 			Usuario usuario = new Usuario();
-			usuario.setNome(usuarioFacebook.getFirstName() + " " + usuarioFacebook.getLastName());
+			usuario.setNome(usuarioFacebook.getName());
 			usuario.setEmail(usuarioFacebook.getEmail());
 			usuario.setTokenFacebook(token);
 

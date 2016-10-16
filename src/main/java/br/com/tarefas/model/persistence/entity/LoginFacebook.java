@@ -12,33 +12,32 @@ public class LoginFacebook {
 
 	private static final String client_secret = "7a7a6e6f5a55e579a767e3aaff57b256";
     private static final String client_id = "1304210512945458";
-    private static final String redirect_uri = "http://localhost:8080/tarefas/service/users/authenticateT";
+    private static final String redirect_uri = "http://localhost:8080/tarefas/service/users/authenticate";
     
     public UsuarioFacebook obterUsuarioFacebook(String code)
 			throws MalformedURLException, IOException {
  
-		String retorno = readURL(new URL(this.getAuthURL(code)));
+		String retorno = readURL(new URL(this.getAuthURLServer(code)));
  
-		String accessToken = null;
-		@SuppressWarnings("unused")
-		Integer expires = null;
-		String[] pairs = retorno.split("&");
-		for (String pair : pairs) {
-			String[] kv = pair.split("=");
-			if (kv.length != 2) {
-				throw new RuntimeException("Resposta auth inesperada.");
-			} else {
-				if (kv[0].equals("access_token")) {
-					accessToken = kv[1];
-				}
-				if (kv[0].equals("expires")) {
-					expires = Integer.valueOf(kv[1]);
-				}
-			}
-		}
+//		String accessToken = null;
+//		@SuppressWarnings("unused")
+//		Integer expires = null;
+//		String[] pairs = retorno.split("&");
+//		for (String pair : pairs) {
+//			String[] kv = pair.split("=");
+//			if (kv.length != 2) {
+//				throw new RuntimeException("Resposta auth inesperada.");
+//			} else {
+//				if (kv[0].equals("access_token")) {
+//					accessToken = kv[1];
+//				}
+//				if (kv[0].equals("expires")) {
+//					expires = Integer.valueOf(kv[1]);
+//				}
+//			}
+//		}
  
-		JSONObject resp = new JSONObject(readURL(new URL(
-				"https://graph.facebook.com/me?access_token=" + accessToken)));
+		JSONObject resp = new JSONObject(retorno);
  
 		return new UsuarioFacebook(resp);
  
@@ -54,15 +53,21 @@ public class LoginFacebook {
 		return new String(baos.toByteArray());
 	}
  
+	@Deprecated
 	public String getLoginRedirectURL() {
 		return "https://graph.facebook.com/oauth/authorize?client_id="
 				+ client_id + "&display=page&redirect_uri=" + redirect_uri
 				+ "&scope=email,publish_actions";
 	}
  
+	@Deprecated
 	public String getAuthURL(String authCode) {
 		return "https://graph.facebook.com/oauth/access_token?client_id="
 				+ client_id + "&redirect_uri=" + redirect_uri
 				+ "&client_secret=" + client_secret + "&code=" + authCode;
+	}
+	
+	public String getAuthURLServer(String authCode) {
+		return "https://graph.facebook.com/v2.8/me?access_token=" + authCode+"&fields=id,name,email";
 	}
 }
