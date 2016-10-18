@@ -10,7 +10,7 @@ import javax.ws.rs.core.MediaType;
 import br.com.tarefas.model.persistence.dao.TarefaDAO;
 import br.com.tarefas.model.persistence.entity.Tarefa;
 
-@Path("/task_lists")
+@Path("/tasks")
 public class TarefaService {
 
 	private TarefaDAO tarefaDAO;
@@ -42,7 +42,7 @@ public class TarefaService {
 
 	@PUT
 	@Path("/update")
-	@Consumes(MediaType.TEXT_PLAIN)
+	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	public Tarefa atualizarTarefa(Tarefa tarefa) {
 		if(tarefa != null && tarefa.getId() > 0){

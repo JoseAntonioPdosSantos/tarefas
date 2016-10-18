@@ -46,7 +46,7 @@ public class UsuarioTest {
 	public void autenticarPeloFacebook() throws MalformedURLException, IOException {
 		UsuarioService usuarioService = new UsuarioService();
 		Usuario usuario = new UsuarioDAO().findById(2L);
-		String retorno = usuarioService.autenticar(null, null, usuario.getTokenFacebook());
+		String retorno = usuarioService.autenticar(usuario);
 		assertEquals("redirect:/", retorno);
 	}
 	

@@ -1,9 +1,13 @@
 package br.com.tarefas.model.persistence.dao;
 
+import java.util.List;
+
+import org.hibernate.criterion.Criterion;
+
 import br.com.tarefas.model.persistence.entity.Tarefa;
 import br.com.tarefas.model.util.HibernateUtil;
 
-public class TarefaDAO extends HibernateUtil{
+public class TarefaDAO extends HibernateUtil implements DAO<Tarefa>{
 
 	
 	public Tarefa cadastrar(Tarefa tarefa) {
@@ -47,4 +51,11 @@ public class TarefaDAO extends HibernateUtil{
 			rollbackTransaction();
 		}
 	}
+
+	@Override
+	public List<Tarefa> listar(Criterion... criterion) {
+		return null;
+	}
+
+
 }

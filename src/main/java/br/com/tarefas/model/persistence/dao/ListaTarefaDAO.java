@@ -10,7 +10,7 @@ import br.com.tarefas.model.persistence.entity.ListaTarefa;
 import br.com.tarefas.model.persistence.entity.Tarefa;
 import br.com.tarefas.model.util.HibernateUtil;
 
-public class ListaTarefaDAO extends HibernateUtil{
+public class ListaTarefaDAO extends HibernateUtil implements DAO<ListaTarefa>{
 
 	public ListaTarefa cadastrar(ListaTarefa listaTarefa){
 		try {
@@ -44,18 +44,6 @@ public class ListaTarefaDAO extends HibernateUtil{
 		} 
 	}
 	
-	@SuppressWarnings("unchecked")
-	public List<ListaTarefa> find(Criterion... criterion) {
-		Criteria crit = ((Session) em.getDelegate())
-				.createCriteria(ListaTarefa.class);
-		for (Criterion c : criterion) {
-			if (c != null) {
-				crit.add(c);
-			}
-		}
-		return crit.list();
-	}
-	
 	public void remover(ListaTarefa listaTarefa){
 		try{
 			beginTransaction();
@@ -67,6 +55,19 @@ public class ListaTarefaDAO extends HibernateUtil{
 		}catch(Exception e){
 			rollbackTransaction();
 		}
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<ListaTarefa> listar(Criterion... criterion) {
+		Criteria crit = ((Session) em.getDelegate())
+				.createCriteria(ListaTarefa.class);
+		for (Criterion c : criterion) {
+			if (c != null) {
+				crit.add(c);
+			}
+		}
+		return crit.list();
 	}
 
 }

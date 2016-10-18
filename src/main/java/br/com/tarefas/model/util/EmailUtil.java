@@ -14,7 +14,7 @@ public class EmailUtil {
 		from.setFrom(remetente, nomeRemetente); // remetente
 		from.setSubject(assunto); // assunto do e-mail
 		from.setMsg(conteudo); //conteudo do e-mail
-		from.setAuthentication(remetente, "******");
+		from.setAuthentication(remetente, "*****");
 		from.send(); //envia o e-mail
 	}
 }

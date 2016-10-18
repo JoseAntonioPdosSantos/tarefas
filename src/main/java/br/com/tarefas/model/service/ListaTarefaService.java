@@ -57,18 +57,31 @@ public class ListaTarefaService {
 			}
 			if (listaTarefa.getCor() != null) {
 				listaTarefa.setCor(cadastrarCor(listaTarefa.getCor()));
+			}else{
+				return null;
 			}
+			
 			if(listaTarefa.getNome() == null || listaTarefa.getNome().trim().isEmpty())return null;
 			Criterion nome = Restrictions.eq("nome", listaTarefa.getNome());
 			Criterion usuario = Restrictions.eq("usuario.id", listaTarefa.getUsuario().getId());
-			List<ListaTarefa> listaTarefas = listaTarefaDAO.find(nome,usuario);
-			if(listaTarefas != null && listaTarefas.size() > 0) return null;
-			return listaTarefaDAO.cadastrar(listaTarefa);
+			List<ListaTarefa> listaTarefas = listaTarefaDAO.listar(nome,usuario);
+			if(listaTarefas != null && listaTarefas.size() > 0){
+				listaTarefa = listaTarefaDAO.atualizar(listaTarefa);
+			}else{
+				listaTarefa = listaTarefaDAO.cadastrar(listaTarefa);
+			}
 		}
-		return null;
+		
+		return limparDadosPrivadosDoUsuario(listaTarefa);
 
 	}
 
+	private ListaTarefa limparDadosPrivadosDoUsuario(ListaTarefa listaTarefa){
+		listaTarefa.getUsuario().setSenha("******");
+		listaTarefa.getUsuario().setTokenFacebook("");
+		return listaTarefa;
+	}
+	
 	public Cor cadastrarCor(Cor cor) {
 		if (cor.getNomeCor() != null && !cor.getNomeCor().trim().isEmpty()) {
 			CorDAO corDAO = new CorDAO();
@@ -94,7 +107,8 @@ public class ListaTarefaService {
 			return null;
 		listaTarefa_.setCor(cadastrarCor(listaTarefa.getCor()));
 		listaTarefa_.setNome(listaTarefa.getNome());
-		return listaTarefaDAO.atualizar(listaTarefa_);
+		listaTarefa_ = listaTarefaDAO.atualizar(listaTarefa_);
+		return limparDadosPrivadosDoUsuario(listaTarefa_);
 	}
 
 	@GET
@@ -103,7 +117,7 @@ public class ListaTarefaService {
 	@Consumes(MediaType.TEXT_PLAIN)
 	public List<ListaTarefa> listarListaTarefa(@PathParam("id") long id) {
 		Criterion usuario = Restrictions.eq("usuario.id", id);
-		return listaTarefaDAO.find(usuario);
+		return listaTarefaDAO.listar(usuario);
 	}
 
 	@DELETE

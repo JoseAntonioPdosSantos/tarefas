@@ -9,7 +9,7 @@ import org.hibernate.criterion.Criterion;
 import br.com.tarefas.model.persistence.entity.Cor;
 import br.com.tarefas.model.util.HibernateUtil;
 
-public class CorDAO  extends HibernateUtil{
+public class CorDAO  extends HibernateUtil implements DAO<Cor>{
 
 	public Cor cadastrar(Cor cor){
 		try {
@@ -46,6 +46,11 @@ public class CorDAO  extends HibernateUtil{
 			}
 		}
 		return crit.list();
+	}
+
+	@Override
+	public Cor findById(long id) {
+		return null;
 	}
 	
 }

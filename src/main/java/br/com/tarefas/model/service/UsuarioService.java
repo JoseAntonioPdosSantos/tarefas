@@ -41,7 +41,7 @@ public class UsuarioService {
 		if (isEmailCadastrado(usuario)) {
 			return "Email já existe na base de dados.";
 		}
-		if (usuarioDAO.cadastrar(usuario)) {
+		if (usuarioDAO.cadastrar(usuario) != null) {
 			return "Usuário cadastrado.";
 		}
 		return null;
@@ -63,7 +63,7 @@ public class UsuarioService {
 			usuario_.setNome(usuario.getNome());
 			usuario_.setEmail(usuario.getEmail());
 			usuario_.setSenha(usuario.getSenha());
-			if (usuarioDAO.atualizar(usuario_)) {
+			if (usuarioDAO.atualizar(usuario_) != null) {
 				return "Usuário Atualizado.";
 			}
 		} else {
@@ -90,28 +90,28 @@ public class UsuarioService {
 	@POST
 	@Path("/authenticate")
 	@Produces(MediaType.TEXT_PLAIN)
-	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
-	public String autenticar(String email, String senha, String token) throws MalformedURLException, IOException {
-		if (token != null && !token.trim().isEmpty()) {
+	@Consumes(MediaType.APPLICATION_JSON)
+	public String autenticar(Usuario usuario) throws MalformedURLException, IOException {
+		if (usuario.getTokenFacebook() != null && !usuario.getTokenFacebook().trim().isEmpty()) {
 			LoginFacebook loginFacebook = new LoginFacebook();
 
-			UsuarioFacebook usuarioFacebook = loginFacebook.obterUsuarioFacebook(token);
-			Usuario usuario = new Usuario();
-			usuario.setNome(usuarioFacebook.getName());
-			usuario.setEmail(usuarioFacebook.getEmail());
-			usuario.setTokenFacebook(token);
+			UsuarioFacebook usuarioFacebook = loginFacebook.obterUsuarioFacebook(usuario.getTokenFacebook());
+			Usuario usuario_ = new Usuario();
+			usuario_.setNome(usuarioFacebook.getName());
+			usuario_.setEmail(usuarioFacebook.getEmail());
+			usuario_.setTokenFacebook(usuario.getTokenFacebook());
 
-			if (isEmailCadastrado(usuario)) {
+			if (isEmailCadastrado(usuario_)) {
 				return "redirect:/";
 			} else {
-				if (usuarioDAO.cadastrar(usuario)) {
+				if (usuarioDAO.cadastrar(usuario_) != null) {
 					return "redirect:/";
 				}
 			}
 			return "";
 		} else {
-			Criterion email_ = Restrictions.ne("id", email);
-			Criterion senha_ = Restrictions.ne("id", senha);
+			Criterion email_ = Restrictions.ne("email", usuario.getEmail());
+			Criterion senha_ = Restrictions.ne("senha", usuario.getSenha());
 			List<Usuario> usuarios = usuarioDAO.find(email_, senha_);
 			if (usuarios != null && usuarios.size() == 1) {
 				return "Autenticação realizada com sucesso";
@@ -141,7 +141,7 @@ public class UsuarioService {
 			}
 			usuario.setSenha(gerarSenha());
 
-			if (usuarioDAO.atualizar(usuario)) {
+			if (usuarioDAO.atualizar(usuario) != null) {
 				EmailUtil.enviarEmail(usuario.getEmail(), usuario.getNome(), "i.t.i.core@outlook.com", "I-T-I Core","Nova Senha", "Olá "+ usuario.getNome()+ ", Obrigado por utilizar nossos serviços. Estamos lhe enviando sua nova senha. A partir de agora, toda vez que for acessar ao sistema utilize sua nova senha: " + usuario.getSenha());
 				return "Senha alterada e enviada via e-mail.";
 			} else {

@@ -9,29 +9,29 @@ import org.hibernate.criterion.Criterion;
 import br.com.tarefas.model.persistence.entity.Usuario;
 import br.com.tarefas.model.util.HibernateUtil;
 
-public class UsuarioDAO extends HibernateUtil {
+public class UsuarioDAO extends HibernateUtil implements DAO<Usuario> {
 
-	public boolean cadastrar(Usuario usuario) {
+	public Usuario cadastrar(Usuario usuario) {
 		try {
 			beginTransaction();
 			em.persist(usuario);
 			commitTransaction();
-			return true;
+			return em.merge(usuario);
 		} catch (Exception e) {
 			rollbackTransaction();
-			return false;
+			return null;
 		}
 	}
 
-	public boolean atualizar(Usuario usuario) {
+	public Usuario atualizar(Usuario usuario) {
 		try {
 			beginTransaction();
-			em.merge(usuario);
+			usuario = em.merge(usuario);
 			commitTransaction();
-			return true;
+			return usuario;
 		} catch (Exception e) {
 			rollbackTransaction();
-			return false;
+			return null;
 		}
 	}
 
@@ -54,6 +54,13 @@ public class UsuarioDAO extends HibernateUtil {
 		}
 		return crit.list();
 	}
+
+	@Override
+	public List<Usuario> listar(Criterion... criterion) {
+		return null;
+	}
+
+
 
 
 }
