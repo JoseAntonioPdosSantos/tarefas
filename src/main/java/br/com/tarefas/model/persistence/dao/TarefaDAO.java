@@ -11,7 +11,7 @@ public class TarefaDAO extends HibernateUtil{
 			beginTransaction();
 			em.persist(tarefa);
 			commitTransaction();
-			return tarefa;
+			return em.merge(tarefa);
 		} catch (Exception e) {
 			rollbackTransaction();
 			return null;
@@ -36,5 +36,15 @@ public class TarefaDAO extends HibernateUtil{
 		} catch (Exception e) {
 			return null;
 		} 
+	}
+	
+	public void removerTarefa(Tarefa tarefa){
+		try{
+			beginTransaction();
+			em.remove(tarefa);
+			commitTransaction();
+		}catch(Exception e){
+			rollbackTransaction();
+		}
 	}
 }

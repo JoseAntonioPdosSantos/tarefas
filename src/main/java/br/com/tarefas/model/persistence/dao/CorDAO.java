@@ -14,7 +14,20 @@ public class CorDAO  extends HibernateUtil{
 	public Cor cadastrarCor(Cor cor){
 		try {
 			beginTransaction();
-			em.merge(cor);
+			em.persist(cor);
+			commitTransaction();
+			return em.merge(cor);
+		} catch (Exception e) {
+			rollbackTransaction();
+			return null;
+		}
+		
+	}
+	
+	public Cor atualizarCor(Cor cor){
+		try {
+			beginTransaction();
+			cor = em.merge(cor);
 			commitTransaction();
 			return cor;
 		} catch (Exception e) {

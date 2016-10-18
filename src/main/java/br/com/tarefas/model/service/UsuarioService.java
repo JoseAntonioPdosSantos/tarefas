@@ -3,6 +3,7 @@ package br.com.tarefas.model.service;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
+import java.util.Random;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -19,6 +20,7 @@ import br.com.tarefas.model.persistence.dao.UsuarioDAO;
 import br.com.tarefas.model.persistence.entity.LoginFacebook;
 import br.com.tarefas.model.persistence.entity.Usuario;
 import br.com.tarefas.model.persistence.entity.UsuarioFacebook;
+import br.com.tarefas.model.util.ASCIIUtil;
 import br.com.tarefas.model.util.EmailUtil;
 
 @Path("/users")
@@ -124,35 +126,36 @@ public class UsuarioService {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
 	public String resetarSenha(String email) throws EmailException {
-		
+
 		Usuario usuario = new Usuario();
 		usuario.setEmail(email);
-		
-		if(isEmailCadastrado(usuario)){
-			
+
+		if (isEmailCadastrado(usuario)) {
+
 			Criterion email_ = Restrictions.eq("email", usuario.getEmail());
 			List<Usuario> usuarios = usuarioDAO.find(email_);
-			if(usuarios != null && usuarios.size() > 0){
+			if (usuarios != null && usuarios.size() > 0) {
 				usuario = usuarios.get(0);
-			}else{
-				return "Não foi  possível alterar a senha";
+			} else {
+				return "Não foi  possível alterar a senha.";
 			}
 			usuario.setSenha(gerarSenha());
-			
-			if(usuarioDAO.atualizarCadastro(usuario)){
-				EmailUtil.enviarEmail("joseantonio.dev@gail.com","José Antonio","i.t.i.core@outlook.com","I-T-I Core","Altere sua senha","Altere sua senha clicando aqui: ");
-			}else{
-				return "Não foi  possível alterar a senha";
+
+			if (usuarioDAO.atualizarCadastro(usuario)) {
+				EmailUtil.enviarEmail(usuario.getEmail(), usuario.getNome(), "i.t.i.core@outlook.com", "I-T-I Core","Nova Senha", "Olá "+ usuario.getNome()+ ", Obrigado por utilizar nossos serviços. Estamos lhe enviando sua nova senha. A partir de agora, toda vez que for acessar ao sistema utilize sua nova senha: " + usuario.getSenha());
+				return "Senha alterada e enviada via e-mail.";
+			} else {
+				return "Não foi  possível alterar a senha.";
 			}
-			
+
 		}
 		return null;
 	}
-	
-	private String gerarSenha(){
+
+	private String gerarSenha() {
 		char[] value = new char[6];
-		for(int i = 0; i < value.length; i++){
-			value[i] = (char) (Math.random() * 255);
+		for (int i = 0; i < value.length; i++) {
+			value[i] = ASCIIUtil.getChar(new Random().nextInt(ASCIIUtil.length()));
 		}
 		return String.valueOf(value);
 	}

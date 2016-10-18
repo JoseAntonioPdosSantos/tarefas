@@ -7,7 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 
 import br.com.tarefas.model.persistence.entity.ListaTarefa;
-import br.com.tarefas.model.persistence.entity.Usuario;
+import br.com.tarefas.model.persistence.entity.Tarefa;
 import br.com.tarefas.model.util.HibernateUtil;
 
 public class ListaTarefaDAO extends HibernateUtil{
@@ -17,7 +17,7 @@ public class ListaTarefaDAO extends HibernateUtil{
 			beginTransaction();
 			em.persist(listaTarefa);
 			commitTransaction();
-			return listaTarefa;
+			return em.merge(listaTarefa);
 		} catch (Exception e) {
 			rollbackTransaction();
 			return null;
@@ -45,9 +45,9 @@ public class ListaTarefaDAO extends HibernateUtil{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<ListaTarefa> listarListaTarefa(Criterion... criterion) {
+	public List<ListaTarefa> find(Criterion... criterion) {
 		Criteria crit = ((Session) em.getDelegate())
-				.createCriteria(Usuario.class);
+				.createCriteria(ListaTarefa.class);
 		for (Criterion c : criterion) {
 			if (c != null) {
 				crit.add(c);
@@ -59,6 +59,9 @@ public class ListaTarefaDAO extends HibernateUtil{
 	public void removerListaTarefa(ListaTarefa listaTarefa){
 		try{
 			beginTransaction();
+			for(Tarefa tarefa : listaTarefa.getTarefas()){
+				new TarefaDAO().removerTarefa(tarefa);
+			}
 			em.remove(listaTarefa);
 			commitTransaction();
 		}catch(Exception e){

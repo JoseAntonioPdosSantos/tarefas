@@ -1,18 +1,20 @@
 package br.com.tarefas.test;
 
+import static org.junit.Assert.*;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 
 import org.apache.commons.mail.EmailException;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
+import br.com.tarefas.model.persistence.dao.UsuarioDAO;
 import br.com.tarefas.model.persistence.entity.Usuario;
 import br.com.tarefas.model.service.UsuarioService;
 
 public class UsuarioTest {
 
-	// @Test
+	 @Test
 	public void cadastrarUsuario() {
 		Usuario usuario = new Usuario();
 		usuario.setNome("Davi Martins dos Santos");
@@ -40,16 +42,20 @@ public class UsuarioTest {
 		assertEquals("Usuário Atualizado.", retorno);
 	}
 
-	@Test
+//	@Test
 	public void autenticarPeloFacebook() throws MalformedURLException, IOException {
-		String token = "EAASiLCxWITIBADlRc3EN59lDZAQZBiK2gZA4n0m6aZC0oXilxVSM2gE1Oe4fUKHi6xLlVAzjUiIQ7t0VHh4C1vjL6ceY9Le0ZBpNOb4E28MBujIxBVxFjwV5SPSy83a1bpxUhMoAgmy0oadSorFMAZCiXEXEbLWHM1LzeEwRxjPgZDZD";
 		UsuarioService usuarioService = new UsuarioService();
-		String retorno = usuarioService.autenticar(null, null, token);
+		Usuario usuario = new UsuarioDAO().findById(2L);
+		String retorno = usuarioService.autenticar(null, null, usuario.getTokenFacebook());
 		assertEquals("redirect:/", retorno);
 	}
-
+	
+//	@Test
 	public void resetarSenha() throws EmailException {
-
+		UsuarioService usuarioService = new UsuarioService();
+		String retorno = usuarioService.resetarSenha("davi@gmail.com");
+		assertEquals("Senha alterada e enviada via e-mail.",retorno);
 	}
-
+	
+	
 }

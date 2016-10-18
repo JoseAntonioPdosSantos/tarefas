@@ -2,7 +2,6 @@ package br.com.tarefas.model.service;
 
 import java.util.List;
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -27,84 +26,98 @@ import br.com.tarefas.model.persistence.entity.Usuario;
 public class ListaTarefaService {
 
 	private final String CHARSET = ";charset=utf-8";
-	
+
 	private ListaTarefaDAO listaTarefaDAO;
-	
-	@PostConstruct
-	private void init() {
+
+	public ListaTarefaService() {
 		listaTarefaDAO = new ListaTarefaDAO();
 	}
-	
+
 	@POST
 	@Path("/add")
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
-	public ListaTarefa cadastrarListaTarefa(ListaTarefa listaTarefa){
-		
-		if(listaTarefa != null){
-			if(listaTarefa.getUsuario() != null){
-				if(listaTarefa.getUsuario().getEmail() != null){
+	public ListaTarefa cadastrarListaTarefa(ListaTarefa listaTarefa) {
+
+		if (listaTarefa != null) {
+			if (listaTarefa.getUsuario() != null) {
+				if (listaTarefa.getUsuario().getEmail() != null) {
 					Criterion email = Restrictions.eq("email", listaTarefa.getUsuario().getEmail());
 					List<Usuario> usuarios = new UsuarioDAO().find(email);
-					if(usuarios!= null && usuarios.size() > 0){
+					if (usuarios != null && usuarios.size() > 0) {
 						listaTarefa.setUsuario(usuarios.get(0));
-					}else{
+					} else {
 						return null;
 					}
-				}else{
+				} else {
 					return null;
 				}
-			}else{
+			} else {
 				return null;
 			}
-			if(listaTarefa.getCor() != null){
-				if(listaTarefa.getCor().getNomeCor()!= null && !listaTarefa.getCor().getNomeCor().trim().isEmpty()){
-					Cor cor = new Cor();
-					cor.setNomeCor(listaTarefa.getCor().getNomeCor());
-					
-					CorDAO corDAO = new CorDAO();
-					cor = corDAO.cadastrarCor(cor);
-					if(cor != null)	{
-						listaTarefa.setCor(cor);
-					}else{
-						return null;
-					}
-				}
+			if (listaTarefa.getCor() != null) {
+				listaTarefa.setCor(cadastrarCor(listaTarefa.getCor()));
 			}
+			if(listaTarefa.getNome() == null || listaTarefa.getNome().trim().isEmpty())return null;
+			Criterion nome = Restrictions.eq("nome", listaTarefa.getNome());
+			Criterion usuario = Restrictions.eq("usuario.id", listaTarefa.getUsuario().getId());
+			List<ListaTarefa> listaTarefas = listaTarefaDAO.find(nome,usuario);
+			if(listaTarefas != null && listaTarefas.size() > 0) return null;
 			return listaTarefaDAO.cadastrarListaTarefa(listaTarefa);
-			
-		}else{
-			return null;
 		}
+		return null;
+
+	}
+
+	public Cor cadastrarCor(Cor cor) {
+		if (cor.getNomeCor() != null && !cor.getNomeCor().trim().isEmpty()) {
+			CorDAO corDAO = new CorDAO();
+			Criterion nome = Restrictions.eq("nomeCor", cor.getNomeCor());
+			List<Cor> cores = corDAO.listarCores(nome);
+			if (cores != null && cores.size() > 0) {
+				return corDAO.atualizarCor(cores.get(0));
+			}
+			return corDAO.cadastrarCor(cor);
+		}
+		return cor;
 	}
 
 	@PUT
-	@Path("/update/{task_list_id}")
+	@Path("/update")
 	@Consumes(MediaType.APPLICATION_JSON + CHARSET)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
-	public ListaTarefa atualizarListaTarefa(ListaTarefa listaTarefa,@PathParam("task_list_id") int task_list_id){
-		ListaTarefa listaTarefa_ = listaTarefaDAO.findById(task_list_id);
-		listaTarefa_.setCor(listaTarefa.getCor());
+	public ListaTarefa atualizarListaTarefa(ListaTarefa listaTarefa) {
+		if (listaTarefa == null || listaTarefa.getId() < 1)
+			return null;
+		ListaTarefa listaTarefa_ = listaTarefaDAO.findById(listaTarefa.getId());
+		if (listaTarefa.getCor() == null)
+			return null;
+		listaTarefa_.setCor(cadastrarCor(listaTarefa.getCor()));
 		listaTarefa_.setNome(listaTarefa.getNome());
-		return listaTarefaDAO.atualizarListaTarefa(listaTarefa_); 
+		return listaTarefaDAO.atualizarListaTarefa(listaTarefa_);
 	}
-	
+
 	@GET
 	@Path("/list/{id}")
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
 	@Consumes(MediaType.TEXT_PLAIN)
-	public List<ListaTarefa> listarListaTarefa(@PathParam("id") int id){
+	public List<ListaTarefa> listarListaTarefa(@PathParam("id") long id) {
 		Criterion usuario = Restrictions.eq("usuario.id", id);
-		return listaTarefaDAO.listarListaTarefa(usuario);
+		return listaTarefaDAO.find(usuario);
 	}
-	
+
 	@DELETE
 	@Path("/remove/{task_list_id}")
 	@Consumes(MediaType.TEXT_PLAIN)
-	public void removerListaTarefa(@PathParam("task_list_id") int task_list_id){
+	@Produces(MediaType.TEXT_PLAIN)
+	public String removerListaTarefa(@PathParam("task_list_id") long task_list_id) {
 		ListaTarefa listaTarefa = listaTarefaDAO.findById(task_list_id);
-		listaTarefaDAO.removerListaTarefa(listaTarefa);
+		try{
+			listaTarefaDAO.removerListaTarefa(listaTarefa);
+			return "Lista de Tarefa removida com sucesso.";
+		}catch(Exception e){
+			return null;
+		}
 	}
 
-	
 }

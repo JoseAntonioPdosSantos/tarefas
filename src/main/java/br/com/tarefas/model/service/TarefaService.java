@@ -1,6 +1,5 @@
 package br.com.tarefas.model.service;
 
-import javax.annotation.PostConstruct;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -18,8 +17,7 @@ public class TarefaService {
 	
 	private final String CHARSET = ";charset=utf-8";
 	
-	@PostConstruct
-	private void init() {
+	public TarefaService() {
 		tarefaDAO = new TarefaDAO();
 	}
 	
@@ -46,7 +44,7 @@ public class TarefaService {
 	@Path("/update")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON + CHARSET)
-	public Tarefa atualizarListaTarefa(Tarefa tarefa) {
+	public Tarefa atualizarTarefa(Tarefa tarefa) {
 		if(tarefa != null && tarefa.getId() > 0){
 			Tarefa tarefa_ = tarefaDAO.findById(tarefa.getId());
 			tarefa_.setStatus(tarefa.getStatus());
