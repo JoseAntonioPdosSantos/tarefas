@@ -6,7 +6,7 @@ import br.com.tarefas.model.util.HibernateUtil;
 public class TarefaDAO extends HibernateUtil{
 
 	
-	public Tarefa cadastrarTarefa(Tarefa tarefa) {
+	public Tarefa cadastrar(Tarefa tarefa) {
 		try {
 			beginTransaction();
 			em.persist(tarefa);
@@ -18,7 +18,7 @@ public class TarefaDAO extends HibernateUtil{
 		}
 	}
 
-	public Tarefa atualizarListaTarefa(Tarefa tarefa) {
+	public Tarefa atualizar(Tarefa tarefa) {
 		try {
 			beginTransaction();
 			tarefa = em.merge(tarefa);
@@ -38,7 +38,7 @@ public class TarefaDAO extends HibernateUtil{
 		} 
 	}
 	
-	public void removerTarefa(Tarefa tarefa){
+	public void remover(Tarefa tarefa){
 		try{
 			beginTransaction();
 			em.remove(tarefa);

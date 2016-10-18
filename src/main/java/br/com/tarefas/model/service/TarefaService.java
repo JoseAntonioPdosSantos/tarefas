@@ -31,7 +31,7 @@ public class TarefaService {
 				if(tarefa.getListaTarefa().getId() > 0){
 					if(tarefa.getDescricao() != null && !tarefa.getDescricao().trim().isEmpty()){
 						if(tarefa.getStatus() != null){
-							return tarefaDAO.cadastrarTarefa(tarefa);
+							return tarefaDAO.cadastrar(tarefa);
 						}
 					}
 				}
@@ -48,7 +48,7 @@ public class TarefaService {
 		if(tarefa != null && tarefa.getId() > 0){
 			Tarefa tarefa_ = tarefaDAO.findById(tarefa.getId());
 			tarefa_.setStatus(tarefa.getStatus());
-			return tarefaDAO.atualizarListaTarefa(tarefa_);
+			return tarefaDAO.atualizar(tarefa_);
 		}
 		return null;
 	}

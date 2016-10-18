@@ -11,7 +11,7 @@ import br.com.tarefas.model.util.HibernateUtil;
 
 public class CorDAO  extends HibernateUtil{
 
-	public Cor cadastrarCor(Cor cor){
+	public Cor cadastrar(Cor cor){
 		try {
 			beginTransaction();
 			em.persist(cor);
@@ -24,7 +24,7 @@ public class CorDAO  extends HibernateUtil{
 		
 	}
 	
-	public Cor atualizarCor(Cor cor){
+	public Cor atualizar(Cor cor){
 		try {
 			beginTransaction();
 			cor = em.merge(cor);
@@ -37,7 +37,7 @@ public class CorDAO  extends HibernateUtil{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public List<Cor> listarCores(Criterion... criterion) {
+	public List<Cor> listar(Criterion... criterion) {
 		Criteria crit = ((Session) em.getDelegate())
 				.createCriteria(Cor.class);
 		for (Criterion c : criterion) {

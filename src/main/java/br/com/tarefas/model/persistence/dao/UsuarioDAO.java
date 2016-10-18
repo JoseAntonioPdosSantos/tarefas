@@ -11,7 +11,7 @@ import br.com.tarefas.model.util.HibernateUtil;
 
 public class UsuarioDAO extends HibernateUtil {
 
-	public boolean cadastrarUsuario(Usuario usuario) {
+	public boolean cadastrar(Usuario usuario) {
 		try {
 			beginTransaction();
 			em.persist(usuario);
@@ -23,7 +23,7 @@ public class UsuarioDAO extends HibernateUtil {
 		}
 	}
 
-	public boolean atualizarCadastro(Usuario usuario) {
+	public boolean atualizar(Usuario usuario) {
 		try {
 			beginTransaction();
 			em.merge(usuario);

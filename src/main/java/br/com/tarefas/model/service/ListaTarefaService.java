@@ -63,7 +63,7 @@ public class ListaTarefaService {
 			Criterion usuario = Restrictions.eq("usuario.id", listaTarefa.getUsuario().getId());
 			List<ListaTarefa> listaTarefas = listaTarefaDAO.find(nome,usuario);
 			if(listaTarefas != null && listaTarefas.size() > 0) return null;
-			return listaTarefaDAO.cadastrarListaTarefa(listaTarefa);
+			return listaTarefaDAO.cadastrar(listaTarefa);
 		}
 		return null;
 
@@ -73,11 +73,11 @@ public class ListaTarefaService {
 		if (cor.getNomeCor() != null && !cor.getNomeCor().trim().isEmpty()) {
 			CorDAO corDAO = new CorDAO();
 			Criterion nome = Restrictions.eq("nomeCor", cor.getNomeCor());
-			List<Cor> cores = corDAO.listarCores(nome);
+			List<Cor> cores = corDAO.listar(nome);
 			if (cores != null && cores.size() > 0) {
-				return corDAO.atualizarCor(cores.get(0));
+				return corDAO.atualizar(cores.get(0));
 			}
-			return corDAO.cadastrarCor(cor);
+			return corDAO.cadastrar(cor);
 		}
 		return cor;
 	}
@@ -94,7 +94,7 @@ public class ListaTarefaService {
 			return null;
 		listaTarefa_.setCor(cadastrarCor(listaTarefa.getCor()));
 		listaTarefa_.setNome(listaTarefa.getNome());
-		return listaTarefaDAO.atualizarListaTarefa(listaTarefa_);
+		return listaTarefaDAO.atualizar(listaTarefa_);
 	}
 
 	@GET
@@ -113,7 +113,7 @@ public class ListaTarefaService {
 	public String removerListaTarefa(@PathParam("task_list_id") long task_list_id) {
 		ListaTarefa listaTarefa = listaTarefaDAO.findById(task_list_id);
 		try{
-			listaTarefaDAO.removerListaTarefa(listaTarefa);
+			listaTarefaDAO.remover(listaTarefa);
 			return "Lista de Tarefa removida com sucesso.";
 		}catch(Exception e){
 			return null;

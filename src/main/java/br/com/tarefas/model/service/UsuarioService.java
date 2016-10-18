@@ -41,7 +41,7 @@ public class UsuarioService {
 		if (isEmailCadastrado(usuario)) {
 			return "Email já existe na base de dados.";
 		}
-		if (usuarioDAO.cadastrarUsuario(usuario)) {
+		if (usuarioDAO.cadastrar(usuario)) {
 			return "Usuário cadastrado.";
 		}
 		return null;
@@ -63,7 +63,7 @@ public class UsuarioService {
 			usuario_.setNome(usuario.getNome());
 			usuario_.setEmail(usuario.getEmail());
 			usuario_.setSenha(usuario.getSenha());
-			if (usuarioDAO.atualizarCadastro(usuario_)) {
+			if (usuarioDAO.atualizar(usuario_)) {
 				return "Usuário Atualizado.";
 			}
 		} else {
@@ -104,7 +104,7 @@ public class UsuarioService {
 			if (isEmailCadastrado(usuario)) {
 				return "redirect:/";
 			} else {
-				if (usuarioDAO.cadastrarUsuario(usuario)) {
+				if (usuarioDAO.cadastrar(usuario)) {
 					return "redirect:/";
 				}
 			}
@@ -141,7 +141,7 @@ public class UsuarioService {
 			}
 			usuario.setSenha(gerarSenha());
 
-			if (usuarioDAO.atualizarCadastro(usuario)) {
+			if (usuarioDAO.atualizar(usuario)) {
 				EmailUtil.enviarEmail(usuario.getEmail(), usuario.getNome(), "i.t.i.core@outlook.com", "I-T-I Core","Nova Senha", "Olá "+ usuario.getNome()+ ", Obrigado por utilizar nossos serviços. Estamos lhe enviando sua nova senha. A partir de agora, toda vez que for acessar ao sistema utilize sua nova senha: " + usuario.getSenha());
 				return "Senha alterada e enviada via e-mail.";
 			} else {

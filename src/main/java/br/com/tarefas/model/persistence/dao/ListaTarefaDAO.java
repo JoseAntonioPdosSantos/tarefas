@@ -12,7 +12,7 @@ import br.com.tarefas.model.util.HibernateUtil;
 
 public class ListaTarefaDAO extends HibernateUtil{
 
-	public ListaTarefa cadastrarListaTarefa(ListaTarefa listaTarefa){
+	public ListaTarefa cadastrar(ListaTarefa listaTarefa){
 		try {
 			beginTransaction();
 			em.persist(listaTarefa);
@@ -24,7 +24,7 @@ public class ListaTarefaDAO extends HibernateUtil{
 		}
 	}
 
-	public ListaTarefa atualizarListaTarefa(ListaTarefa listaTarefa){
+	public ListaTarefa atualizar(ListaTarefa listaTarefa){
 		try {
 			beginTransaction();
 			listaTarefa = em.merge(listaTarefa);
@@ -56,11 +56,11 @@ public class ListaTarefaDAO extends HibernateUtil{
 		return crit.list();
 	}
 	
-	public void removerListaTarefa(ListaTarefa listaTarefa){
+	public void remover(ListaTarefa listaTarefa){
 		try{
 			beginTransaction();
 			for(Tarefa tarefa : listaTarefa.getTarefas()){
-				new TarefaDAO().removerTarefa(tarefa);
+				new TarefaDAO().remover(tarefa);
 			}
 			em.remove(listaTarefa);
 			commitTransaction();
